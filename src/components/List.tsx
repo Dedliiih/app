@@ -1,8 +1,19 @@
 import './List.css';
 import PersonEntity from '../entities/Person';
+import type React from 'react';
 
-function List() {
-  const list: PersonEntity[] = JSON.parse(window.localStorage.getItem('persons') as string);
+interface ListProps {
+  list: PersonEntity[];
+  setList: React.Dispatch<React.SetStateAction<PersonEntity[]>>;
+}
+
+function List({ list, setList }: ListProps) {
+  const handleDelete = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const newList = list.filter((_, index) => index !== Number(event.currentTarget.value));
+    setList(newList);
+    window.localStorage.setItem('persons', JSON.stringify(newList));
+  };
+
   return (
     <section className="list-container">
       {list &&
@@ -16,10 +27,10 @@ function List() {
             <p>{person.description}</p>
             <p>Nacido el {person.birthday}</p>
             <div className="button-container">
-              <button className="edit-button" value={String(index)}>
+              <button className="edit-button" value={String(index)} onClick={handleEdit}>
                 Editar
               </button>
-              <button className="delete-button" value={String(index)}>
+              <button className="delete-button" value={String(index)} onClick={handleDelete}>
                 Eliminar
               </button>
             </div>

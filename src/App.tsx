@@ -8,11 +8,18 @@ import List from './components/List';
 function App() {
   const [personsList, setPersonsList] = useState<PersonEntity[]>([]);
 
-  useEffect(() => {}, []);
+  const getPersons = () => JSON.parse(window.localStorage.getItem('persons') as string);
+
+  useEffect(() => {
+    const persons = getPersons();
+    if (!persons) return;
+    setPersonsList(persons);
+  }, []);
+
   return (
     <AppLayout>
       <Form setList={setPersonsList} list={personsList} />
-      <List />
+      <List list={personsList} setList={setPersonsList} />
     </AppLayout>
   );
 }
