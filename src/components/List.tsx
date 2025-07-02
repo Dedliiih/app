@@ -5,13 +5,21 @@ import type React from 'react';
 interface ListProps {
   list: PersonEntity[];
   setList: React.Dispatch<React.SetStateAction<PersonEntity[]>>;
+  onEdit: React.Dispatch<React.SetStateAction<boolean>>;
+  setPerson: React.Dispatch<React.SetStateAction<PersonEntity | null>>;
 }
 
-function List({ list, setList }: ListProps) {
+function List({ list, setList, onEdit, setPerson }: ListProps) {
   const handleDelete = (event: React.MouseEvent<HTMLButtonElement>) => {
     const newList = list.filter((_, index) => index !== Number(event.currentTarget.value));
     setList(newList);
     window.localStorage.setItem('persons', JSON.stringify(newList));
+  };
+
+  const handleEdit = (person: PersonEntity, index: number) => {
+    person.id = index;
+    onEdit((prev) => !prev);
+    setPerson(person);
   };
 
   return (
@@ -27,7 +35,7 @@ function List({ list, setList }: ListProps) {
             <p>{person.description}</p>
             <p>Nacido el {person.birthday}</p>
             <div className="button-container">
-              <button className="edit-button" value={String(index)} onClick={handleEdit}>
+              <button className="edit-button" onClick={() => handleEdit(person, index)}>
                 Editar
               </button>
               <button className="delete-button" value={String(index)} onClick={handleDelete}>

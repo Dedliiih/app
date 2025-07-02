@@ -1,7 +1,6 @@
-export interface Person {
-  id: number;
+export interface Errors {
   name: string;
-  age: number;
+  age: string;
   profession: string;
   description: string;
   birthday: string;

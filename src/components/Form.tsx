@@ -10,8 +10,7 @@ function Form({ setList, list }: FormProps) {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = Object.fromEntries(new FormData(event.currentTarget));
-    const newPerson = new PersonEntity(data.name as string, Number(data.age), data.profession as string, data.description as string, data.birthday as string);
-
+    const newPerson = new PersonEntity(Number(data.id), data.name as string, Number(data.age), data.profession as string, data.description as string, data.birthday as string);
     const updatedList = [...list, newPerson];
     setList(updatedList);
     window.localStorage.setItem('persons', JSON.stringify(updatedList));
