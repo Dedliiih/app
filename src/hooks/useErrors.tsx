@@ -23,7 +23,17 @@ function useErrors() {
     return isValid;
   }
 
-  return { errors, setErrors, validateData };
+  function resetErrors() {
+    setErrors({
+      name: '',
+      age: '',
+      profession: '',
+      description: '',
+      birthday: ''
+    });
+  }
+
+  return { errors, validateData, resetErrors };
 }
 
 export default useErrors;

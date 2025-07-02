@@ -27,6 +27,7 @@ function EditModal({ onEdit, person, list, setList }: EditProps) {
     list[person!.id] = newPerson;
     setList(list);
     LocalStorage.setData(list);
+
     onEdit((prev) => !prev);
   };
 

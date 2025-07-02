@@ -9,7 +9,7 @@ interface FormProps {
 }
 
 function Form({ setList, list }: FormProps) {
-  const { errors, validateData } = useErrors();
+  const { errors, validateData, resetErrors } = useErrors();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -21,6 +21,9 @@ function Form({ setList, list }: FormProps) {
     const updatedList = [...list, newPerson];
     setList(updatedList);
     LocalStorage.setData(updatedList);
+
+    event.currentTarget.reset();
+    resetErrors();
   };
 
   return (
