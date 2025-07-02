@@ -1,5 +1,6 @@
 import type { Person } from '../interfaces/Person';
 import type { Errors } from '../interfaces/Errors';
+import { ValidationMessages as VM } from '../enums/errors';
 
 class PersonEntity implements Person {
   id: number;
@@ -18,6 +19,41 @@ class PersonEntity implements Person {
     this.birthday = birthday;
   }
 
+  private validateName(errors: Errors): void {
+    if (!this.name.trim()) errors.name = VM.NAME_REQUIRED;
+    else if (this.name.trim().length < 3) errors.name = VM.NAME_TOO_SHORT;
+  }
+
+  private validateAge(errors: Errors): void {
+    if (isNaN(this.age) || this.age <= 0) errors.age = VM.AGE_INVALID;
+    else if (this.age > 120) errors.age = VM.AGE_TOO_HIGH;
+  }
+
+  private validateProfession(errors: Errors): void {
+    if (!this.profession) errors.profession = VM.PROFESSION_REQUIRED;
+  }
+
+  private validateDescription(errors: Errors): void {
+    if (!this.description.trim()) errors.description = VM.DESCRIPTION_REQUIRED;
+    else if (this.description.trim().length < 10) errors.description = VM.DESCRIPTION_TOO_SHORT;
+    else if (this.description.trim().length > 300) errors.description = VM.DESCRIPTION_TOO_LONG;
+  }
+
+  private validateBirthday(errors: Errors): void {
+    if (!this.birthday) {
+      errors.birthday = VM.BIRTHDAY_REQUIRED;
+    } else {
+      const date = new Date(this.birthday);
+      const now = new Date();
+
+      if (isNaN(date.getTime())) {
+        errors.birthday = VM.BIRTHDAY_INVALID;
+      } else if (date > now) {
+        errors.birthday = VM.BIRTHDAY_IN_FUTURE;
+      }
+    }
+  }
+
   public validate(): Errors {
     const errors: Errors = {
       name: '',
@@ -27,11 +63,11 @@ class PersonEntity implements Person {
       birthday: ''
     };
 
-    if (!this.name.trim()) errors.name = 'El nombre es obligatorio.';
-    if (isNaN(this.age) || this.age <= 0) errors.age = 'La edad debe ser mayor a cero.';
-    if (!this.profession) errors.profession = 'La profesión es obligatoria.';
-    if (!this.description.trim()) errors.description = 'La descripción es obligatoria.';
-    if (!this.birthday) errors.birthday = 'La fecha de nacimiento es obligatoria.';
+    this.validateName(errors);
+    this.validateAge(errors);
+    this.validateProfession(errors);
+    this.validateDescription(errors);
+    this.validateBirthday(errors);
 
     return errors;
   }
