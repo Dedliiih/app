@@ -5,16 +5,15 @@ import { useState, useEffect } from 'react';
 import type PersonEntity from './entities/Person';
 import List from './components/List';
 import EditModal from './components/EditModal';
+import { LocalStorage } from './services/localStorage';
 
 function App() {
   const [personsList, setPersonsList] = useState<PersonEntity[]>([]);
   const [modal, setModal] = useState<boolean>(false);
   const [person, setPerson] = useState<PersonEntity | null>(null);
 
-  const getPersons = () => JSON.parse(window.localStorage.getItem('persons') as string);
-
   useEffect(() => {
-    const persons = getPersons();
+    const persons = LocalStorage.getData();
     if (!persons) return;
     setPersonsList(persons);
   }, []);

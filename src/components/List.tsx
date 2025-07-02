@@ -1,6 +1,7 @@
 import './List.css';
 import PersonEntity from '../entities/Person';
 import type React from 'react';
+import { LocalStorage } from '../services/localStorage';
 
 interface ListProps {
   list: PersonEntity[];
@@ -13,7 +14,7 @@ function List({ list, setList, onEdit, setPerson }: ListProps) {
   const handleDelete = (event: React.MouseEvent<HTMLButtonElement>) => {
     const newList = list.filter((_, index) => index !== Number(event.currentTarget.value));
     setList(newList);
-    window.localStorage.setItem('persons', JSON.stringify(newList));
+    LocalStorage.setData(newList);
   };
 
   const handleEdit = (person: PersonEntity, index: number) => {

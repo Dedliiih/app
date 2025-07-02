@@ -1,7 +1,7 @@
 import PersonEntity from '../entities/Person';
-import { useState } from 'react';
 import './EditModal.css';
-import type { Errors } from '../interfaces/Errors';
+import useErrors from '../hooks/useErrors';
+import { LocalStorage } from '../services/localStorage';
 
 interface EditProps {
   onEdit: React.Dispatch<React.SetStateAction<boolean>>;
@@ -11,13 +11,7 @@ interface EditProps {
 }
 
 function EditModal({ onEdit, person, list, setList }: EditProps) {
-  const [errors, setErrors] = useState<Errors>({
-    name: '',
-    age: '',
-    profession: '',
-    description: '',
-    birthday: ''
-  });
+  const { errors, validateData } = useErrors();
 
   const handleClose = () => {
     onEdit((prev) => !prev);
@@ -28,17 +22,11 @@ function EditModal({ onEdit, person, list, setList }: EditProps) {
     const data = Object.fromEntries(new FormData(event.currentTarget));
     const newPerson = new PersonEntity(Number(data.id), data.name as string, Number(data.age), data.profession as string, data.description as string, data.birthday as string);
 
-    const errorsList = newPerson.validate();
-    const isValid = Object.values(errorsList).every((value) => value === '');
-
-    if (!isValid) {
-      setErrors(errorsList);
-      return;
-    }
+    if (!validateData(newPerson)) return;
 
     list[person!.id] = newPerson;
     setList(list);
-    window.localStorage.setItem('persons', JSON.stringify(list));
+    LocalStorage.setData(list);
     onEdit((prev) => !prev);
   };
 
